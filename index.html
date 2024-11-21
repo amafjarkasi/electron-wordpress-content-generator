@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Electron Demo</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="titlebar">
+        <div class="titlebar-buttons">
+            <button id="minimize">─</button>
+            <button id="close">×</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="sidebar">
+            <div class="logo">
+                <h2>Demo App</h2>
+            </div>
+            <nav>
+                <a href="#" data-section="dashboard" class="active">Dashboard</a>
+                <a href="#" data-section="analytics">Analytics</a>
+                <a href="#" data-section="settings">Settings</a>
+            </nav>
+        </div>
+        
+        <main id="main-content">
+            <!-- Dashboard Section -->
+            <div id="dashboard-section" class="content-section active">
+                <h1>Dashboard</h1>
+                <div class="cards">
+                    <div class="card">
+                        <h3>Statistics</h3>
+                        <p>Sample statistics content</p>
+                    </div>
+                    <div class="card">
+                        <h3>Activities</h3>
+                        <p>Recent activities will appear here</p>
+                    </div>
+                    <div class="card">
+                        <h3>Performance</h3>
+                        <p>Performance metrics</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Section -->
+            <div id="analytics-section" class="content-section">
+                <h1>Analytics</h1>
+                <div class="cards">
+                    <div class="card">
+                        <h3>Charts</h3>
+                        <p>Analytics charts will appear here</p>
+                    </div>
+                    <div class="card">
+                        <h3>Reports</h3>
+                        <p>Generated reports and insights</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Section -->
+            <div id="settings-section" class="content-section">
+                <h1>Settings</h1>
+                <div class="cards">
+                    <div class="card">
+                        <h3>User Preferences</h3>
+                        <p>Customize your experience</p>
+                    </div>
+                    <div class="card">
+                        <h3>Account Settings</h3>
+                        <p>Manage your account details</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="renderer.js"></script>
+</body>
+</html>

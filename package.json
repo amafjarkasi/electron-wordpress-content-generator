@@ -1,0 +1,19 @@
+{
+  "name": "electron-demo",
+  "version": "1.0.0",
+  "description": "Electron Dashboard Demo App",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder"
+  },
+  "dependencies": {
+    "electron-store": "^8.1.0",
+    "electron-is-dev": "^2.0.0"
+  },
+  "devDependencies": {
+    "electron": "^25.3.1",
+    "electron-builder": "^24.6.3"
+  }
+}
