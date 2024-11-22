@@ -20,5 +20,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
     findKeywords: (params) => ipcRenderer.invoke('find-keywords', params),
     saveKeywords: (keywords) => ipcRenderer.invoke('save-keywords', keywords),
     getSavedKeywords: () => ipcRenderer.invoke('get-saved-keywords'),
-    deleteSavedKeyword: (keyword) => ipcRenderer.invoke('delete-saved-keyword', keyword),
+    deleteSavedKeyword: (keyword) => ipcRenderer.invoke('delete-saved-keyword', keyword)
 });

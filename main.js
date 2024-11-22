@@ -21,6 +21,14 @@ async function initializeWordPressApi(settings, event) {
             }
         });
 
+        console.log('WordPress Site Info:', {
+            name: response.data?.name,
+            description: response.data?.description,
+            url: response.data?.url,
+            namespaces: response.data?.namespaces,
+            everything: response.data
+        });
+
         // Format the response data
         const wpData = {
             success: true,
@@ -36,6 +44,12 @@ async function initializeWordPressApi(settings, event) {
             axios.get(`${apiUrl}/wp-json/wp/v2/pages`, { headers: { 'Authorization': `Basic ${authString}` } }),
             axios.get(`${apiUrl}/wp-json/wp/v2/categories`, { headers: { 'Authorization': `Basic ${authString}` } })
         ]);
+
+        console.log('WordPress Content Stats:', {
+            posts: posts.data?.length || 0,
+            pages: pages.data?.length || 0,
+            categories: categories.data?.length || 0
+        });
 
         // Send dashboard stats to renderer if event is provided
         if (event?.sender) {
@@ -64,6 +78,7 @@ async function initializeWordPressApi(settings, event) {
             apiUrl: apiUrl
         };
     } catch (error) {
+        console.error('WordPress Initialization Error:', error.message);
         return { 
             success: false, 
             error: error.response 

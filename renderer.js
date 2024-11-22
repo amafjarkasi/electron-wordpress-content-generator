@@ -390,6 +390,8 @@ window.electronAPI = {
 
 // Handle WordPress dashboard stats
 window.electronAPI.onDashboardStats((_event, stats) => {
+    console.log('Received WordPress Dashboard Stats:', stats);
+
     // Update site information
     document.getElementById('site-name').textContent = stats.site.name;
     document.getElementById('site-description').textContent = stats.site.description;
@@ -466,10 +468,6 @@ document.getElementById('clear-logs')?.addEventListener('click', () => {
 document.getElementById('export-logs')?.addEventListener('click', () => {
     logger.export();
     logger.info('Logs exported');
-});
-
-document.getElementById('refresh-logs')?.addEventListener('click', () => {
-    logger.info('Logs refreshed');
 });
 
 // Load preferences, WordPress settings, and saved keywords when the page loads

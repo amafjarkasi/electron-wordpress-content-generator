@@ -12,6 +12,7 @@ A modern desktop application built with Electron for generating and managing Wor
 - [Security](#security)
 - [Logging](#logging)
 - [Keyword Management](#keyword-management)
+- [Debugging Features](#debugging-features)
 
 ## ✨ Features
 
@@ -116,7 +117,6 @@ The application includes a comprehensive logging system to help track operations
 1. Navigate to the "Logging" section in the sidebar
 2. View real-time logs in the logging textarea
 3. Use the control buttons to:
-   - Refresh logs
    - Clear log history
    - Export logs to file
 
@@ -152,3 +152,18 @@ The application provides comprehensive keyword management capabilities:
      - Switch to the content generation section
      - Populate the topic field with the selected keyword
      - Prepare for content generation
+
+## 🔍 Debugging Features
+
+### Console Logging
+The application includes comprehensive console logging for WordPress site information:
+- Basic site information (name, description, URL)
+- Complete WordPress API response data
+- Content statistics (posts, pages, categories)
+- API namespaces
+- Connection status and errors
+
+To view the logs:
+1. Open Developer Tools (Ctrl+Shift+I)
+2. Navigate to the Console tab
+3. Connect to your WordPress site or refresh the connection
