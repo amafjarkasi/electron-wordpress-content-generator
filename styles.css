@@ -631,7 +631,7 @@ th {
 }
 
 .dark-theme .btn:hover {
-    background-color: #404040;
+    background-color: #353535;
 }
 
 .dark-theme .btn.primary {
@@ -916,4 +916,126 @@ th {
     white-space: pre-line;
     font-size: 13px;
     line-height: 1.2;
+}
+
+/* Logging Section Styles */
+.log-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.log-controls {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.log-content {
+    width: 100%;
+    height: calc(100vh - 300px);
+}
+
+.log-textarea {
+    width: 100%;
+    height: 100%;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    resize: none;
+    background-color: #f8f9fa;
+}
+
+.dark-theme .log-textarea {
+    background-color: #2d2d2d;
+    color: #e0e0e0;
+    border-color: #404040;
+}
+
+/* Logging Styles */
+.log-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.log-controls {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.log-content {
+    position: relative;
+    height: 400px;
+}
+
+.log-textarea {
+    width: 100%;
+    height: 100%;
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    font-family: monospace;
+    font-size: 13px;
+    line-height: 1.4;
+    resize: none;
+    white-space: pre;
+    overflow-y: auto;
+}
+
+.log-textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+/* Dark theme support */
+.dark-theme .log-textarea {
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+}
+
+.log-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+.log-list li {
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    font-family: monospace;
+}
+
+.log-list li:last-child {
+    border-bottom: none;
+}
+
+.log-list li .timestamp {
+    color: var(--text-muted);
+    margin-right: 0.5rem;
+}
+
+.log-list li.error {
+    color: var(--error-color);
+    background-color: var(--error-bg);
+}
+
+.log-list li.warning {
+    color: var(--warning-color);
+    background-color: var(--warning-bg);
+}
+
+.log-list li.success {
+    color: var(--success-color);
+    background-color: var(--success-bg);
 }

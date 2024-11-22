@@ -30,6 +30,9 @@
                 <a class="nav-item" data-section="content-settings">
                     Content Settings
                 </a>
+                <a class="nav-item" data-section="logging">
+                    Logging
+                </a>
                 <a class="nav-item" data-section="settings">
                     Settings
                 </a>
@@ -232,6 +235,26 @@
                                     <option value="markdown">Markdown</option>
                                 </select>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logging Section -->
+            <div id="logging-section" class="content-section">
+                <h1>Logging</h1>
+                <div class="cards">
+                    <div class="card">
+                        <div class="log-header">
+                            <h3>Application Logs</h3>
+                            <div class="log-controls">
+                                <button id="refresh-logs" class="btn">Refresh Logs</button>
+                                <button id="clear-logs" class="btn">Clear Logs</button>
+                                <button id="export-logs" class="btn">Export Logs</button>
+                            </div>
+                        </div>
+                        <div class="log-content">
+                            <textarea id="log-output" class="log-textarea" readonly></textarea>
                         </div>
                     </div>
                 </div>

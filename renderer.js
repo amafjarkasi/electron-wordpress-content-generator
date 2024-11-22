@@ -25,19 +25,25 @@ document.querySelectorAll('nav a').forEach(link => {
 
 // User Preferences
 async function loadPreferences() {
-    const preferences = await window.electronAPI.dbGet('settings.preferences') || {
-        theme: 'light',
-        autoSave: false,
-        refreshInterval: 30,
-        openaiKey: ''
-    };
-    
-    document.getElementById('theme-select').value = preferences.theme;
-    document.getElementById('auto-save').checked = preferences.autoSave;
-    document.getElementById('refresh-interval').value = preferences.refreshInterval || 30; // Set default value if not found
-    document.getElementById('openai-key').value = preferences.openaiKey || '';
-    
-    applyTheme(preferences.theme);
+    logger.info('Loading user preferences...');
+    try {
+        const preferences = await window.electronAPI.dbGet('settings.preferences') || {
+            theme: 'light',
+            autoSave: false,
+            refreshInterval: 30,
+            openaiKey: ''
+        };
+        
+        document.getElementById('theme-select').value = preferences.theme;
+        document.getElementById('auto-save').checked = preferences.autoSave;
+        document.getElementById('refresh-interval').value = preferences.refreshInterval || 30; // Set default value if not found
+        document.getElementById('openai-key').value = preferences.openaiKey || '';
+        
+        applyTheme(preferences.theme);
+        logger.success('User preferences loaded successfully');
+    } catch (error) {
+        logger.error(`Failed to load preferences: ${error.message}`);
+    }
 }
 
 function applyTheme(theme) {
@@ -67,9 +73,15 @@ document.getElementById('openai-key').addEventListener('change', async (e) => {
 });
 
 async function savePreference(key, value) {
-    const currentPrefs = await window.electronAPI.dbGet('settings.preferences') || {};
-    currentPrefs[key] = value;
-    await window.electronAPI.dbSet('settings.preferences', currentPrefs);
+    logger.info(`Saving preference: ${key}`);
+    try {
+        const currentPrefs = await window.electronAPI.dbGet('settings.preferences') || {};
+        currentPrefs[key] = value;
+        await window.electronAPI.dbSet('settings.preferences', currentPrefs);
+        logger.success(`Preference ${key} saved successfully`);
+    } catch (error) {
+        logger.error(`Failed to save preference ${key}: ${error.message}`);
+    }
 }
 
 // WordPress Settings
@@ -92,14 +104,15 @@ async function saveWordPressSettings() {
 }
 
 async function testConnection() {
-    const statusElement = document.getElementById('connection-status');
-    statusElement.className = 'connection-status';
-    statusElement.style.display = 'block';
-    statusElement.style.margin = '20px auto 0';
-    statusElement.style.textAlign = 'center';
-    statusElement.textContent = 'Testing connection...';
-
+    logger.info('Testing WordPress connection...');
     try {
+        const statusElement = document.getElementById('connection-status');
+        statusElement.className = 'connection-status';
+        statusElement.style.display = 'block';
+        statusElement.style.margin = '20px auto 0';
+        statusElement.style.textAlign = 'center';
+        statusElement.textContent = 'Testing connection...';
+
         const settings = {
             siteUrl: document.getElementById('wp-site-url').value.trim(),
             username: document.getElementById('wp-username').value.trim(),
@@ -113,10 +126,12 @@ async function testConnection() {
             showConnectionStatus('Successfully connected to WordPress site:\nURL: ' + settings.siteUrl, 'success');
             // Save settings if connection is successful
             await saveWordPressSettings();
+            logger.success('WordPress connection test completed');
         } else {
             throw new Error(result.error);
         }
     } catch (error) {
+        logger.error(`WordPress connection test failed: ${error.message}`);
         showConnectionStatus(`Connection failed: ${error.message}`, 'error');
     }
 }
@@ -139,7 +154,7 @@ document.querySelector('.toggle-password').addEventListener('click', function() 
 });
 
 // Save settings button
-document.getElementById('save-wp-settings').addEventListener('click', saveWordPressSettings);
+document.getElementById('save-wp-settings')?.addEventListener('click', saveWordPressSettings);
 
 // Test connection button
 document.getElementById('test-connection').addEventListener('click', testConnection);
@@ -169,71 +184,82 @@ async function initializeWordPress() {
     }
 }
 
-// Content Generation
+// Content Generation with logging
 document.getElementById('generate-button')?.addEventListener('click', async () => {
     const topic = document.getElementById('content-topic').value;
     const contentType = document.getElementById('content-type').value;
     const tone = document.getElementById('content-tone').value;
-    const generatedTextArea = document.getElementById('generated-text');
-
-    if (!topic) {
-        showNotification('Please enter a topic or keywords', 'error');
-        return;
-    }
-
-    try {
-        generatedTextArea.value = 'Generating content...';
-        const response = await window.api.generateContent({ topic, contentType, tone });
-        generatedTextArea.value = response;
-        showNotification('Content generated successfully!', 'success');
-    } catch (error) {
-        generatedTextArea.value = '';
-        showNotification('Failed to generate content: ' + error.message, 'error');
-    }
-});
-
-document.getElementById('copy-content')?.addEventListener('click', () => {
-    const generatedText = document.getElementById('generated-text');
-    generatedText.select();
-    document.execCommand('copy');
-    showNotification('Content copied to clipboard!', 'success');
-});
-
-document.getElementById('publish-content')?.addEventListener('click', async () => {
-    const generatedText = document.getElementById('generated-text').value;
     
-    if (!generatedText) {
-        showNotification('No content to publish', 'error');
-        return;
-    }
-
+    logger.info(`Generating ${contentType} content for topic: ${topic}`);
+    
     try {
-        await window.api.publishToWordPress({
-            title: document.getElementById('content-topic').value,
-            content: generatedText
+        const generatedContent = await window.electronAPI.generateContent({
+            topic,
+            contentType,
+            tone
         });
-        showNotification('Content published to WordPress successfully!', 'success');
+        
+        document.getElementById('generated-text').value = generatedContent;
+        logger.success('Content generated successfully');
     } catch (error) {
-        showNotification('Failed to publish: ' + error.message, 'error');
+        logger.error(`Failed to generate content: ${error.message}`);
+        document.getElementById('generated-text').value = `Error: ${error.message}`;
     }
 });
 
-// Keyword Research
-document.getElementById('find-keywords')?.addEventListener('click', async () => {
-    const seedKeyword = document.getElementById('seed-keyword').value;
-    const language = document.getElementById('keyword-language').value;
+// Copy content with logging
+document.getElementById('copy-content')?.addEventListener('click', () => {
+    const content = document.getElementById('generated-text').value;
+    if (content) {
+        navigator.clipboard.writeText(content)
+            .then(() => {
+                logger.success('Content copied to clipboard');
+            })
+            .catch(error => {
+                logger.error(`Failed to copy content: ${error.message}`);
+            });
+    }
+});
 
-    if (!seedKeyword) {
-        showNotification('Please enter a seed keyword', 'error');
+// Publish content with logging
+document.getElementById('publish-content')?.addEventListener('click', async () => {
+    const content = document.getElementById('generated-text').value;
+    if (!content) {
+        logger.warning('No content to publish');
         return;
     }
-
+    
+    logger.info('Publishing content to WordPress...');
     try {
-        const keywords = await window.api.findKeywords({ seedKeyword, language });
-        displayKeywordResults(keywords);
-        showNotification('Keywords found successfully!', 'success');
+        const result = await window.electronAPI.publishToWordPress({
+            title: document.getElementById('content-topic').value,
+            content: content
+        });
+        if (result.success) {
+            logger.success(`Content published successfully. Post ID: ${result.postId}`);
+        } else {
+            throw new Error(result.error);
+        }
     } catch (error) {
-        showNotification('Failed to find keywords: ' + error.message, 'error');
+        logger.error(`Failed to publish content: ${error.message}`);
+    }
+});
+
+// Keyword Research with logging
+document.getElementById('find-keywords')?.addEventListener('click', async () => {
+    const topic = document.getElementById('keyword-topic').value;
+    if (!topic) {
+        logger.warning('No topic provided for keyword research');
+        return;
+    }
+    
+    logger.info(`Starting keyword research for topic: ${topic}`);
+    try {
+        const keywords = await window.electronAPI.findKeywords(topic);
+        displayKeywordResults(keywords);
+        logger.success(`Found ${keywords.length} keywords for topic: ${topic}`);
+    } catch (error) {
+        logger.error(`Keyword research failed: ${error.message}`);
     }
 });
 
@@ -245,90 +271,90 @@ function displayKeywordResults(keywords) {
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>
-                <input type="checkbox" class="keyword-select" value="${keyword.keyword}">
+                <input type="checkbox" class="keyword-select">
                 ${keyword.keyword}
             </td>
             <td>${keyword.searchVolume}</td>
-            <td>
-                <span class="keyword-badge difficulty-${keyword.difficulty.toLowerCase()}">
-                    ${keyword.difficulty}
-                </span>
-            </td>
-            <td>$${keyword.cpc.toFixed(2)}</td>
-            <td>
-                <button class="btn small" onclick="useKeyword('${keyword.keyword}')">Use</button>
-            </td>
+            <td>${keyword.difficulty}</td>
+            <td>${keyword.cpc}</td>
         `;
         tbody.appendChild(tr);
     });
 }
 
-document.getElementById('export-keywords')?.addEventListener('click', () => {
-    const table = document.getElementById('keywords-table');
-    const rows = Array.from(table.querySelectorAll('tbody tr'));
-    const csvContent = [
-        ['Keyword', 'Search Volume', 'Difficulty', 'CPC'],
-        ...rows.map(row => {
-            const cells = Array.from(row.cells);
-            return [
-                cells[0].textContent.trim(),
-                cells[1].textContent,
-                cells[2].textContent.trim(),
-                cells[3].textContent
-            ];
-        })
-    ].map(row => row.join(',')).join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'keywords.csv';
-    a.click();
-    window.URL.revokeObjectURL(url);
-    showNotification('Keywords exported to CSV', 'success');
-});
-
+// Save keywords with logging
 document.getElementById('save-keywords')?.addEventListener('click', async () => {
-    const selectedKeywords = Array.from(document.querySelectorAll('.keyword-select:checked'))
-        .map(checkbox => {
-            const row = checkbox.closest('tr');
-            return {
-                keyword: checkbox.value,
-                searchVolume: row.cells[1].textContent,
-                difficulty: row.cells[2].textContent.trim(),
-                cpc: row.cells[3].textContent,
-                addedDate: new Date().toISOString()
-            };
-        });
-
+    const selectedKeywords = Array.from(document.querySelectorAll('#keywords-table tbody tr input[type="checkbox"]:checked'))
+        .map(checkbox => checkbox.closest('tr').dataset.keyword);
+    
     if (selectedKeywords.length === 0) {
-        showNotification('Please select keywords to save', 'error');
+        logger.warning('No keywords selected to save');
         return;
     }
-
+    
+    logger.info(`Saving ${selectedKeywords.length} keywords`);
     try {
-        await window.api.saveKeywords(selectedKeywords);
-        updateSavedKeywords();
-        showNotification('Keywords saved successfully!', 'success');
+        await window.electronAPI.saveKeywords(selectedKeywords);
+        logger.success('Keywords saved successfully');
+        await updateSavedKeywords();
     } catch (error) {
-        showNotification('Failed to save keywords: ' + error.message, 'error');
+        logger.error(`Failed to save keywords: ${error.message}`);
+    }
+});
+
+// Export keywords with logging
+document.getElementById('export-keywords')?.addEventListener('click', () => {
+    const table = document.getElementById('keywords-table');
+    if (!table) {
+        logger.warning('No keywords available to export');
+        return;
+    }
+    
+    logger.info('Exporting keywords to CSV');
+    try {
+        const rows = Array.from(table.querySelectorAll('tbody tr'));
+        const csvContent = [
+            ['Keyword', 'Search Volume', 'Competition', 'Difficulty'],
+            ...rows.map(row => {
+                const cells = Array.from(row.querySelectorAll('td'));
+                return [
+                    cells[1].textContent,
+                    cells[2].textContent,
+                    cells[3].textContent,
+                    cells[4].textContent
+                ];
+            })
+        ].map(row => row.join(',')).join('\n');
+        
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `keywords-${new Date().toISOString()}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        logger.success('Keywords exported successfully');
+    } catch (error) {
+        logger.error(`Failed to export keywords: ${error.message}`);
     }
 });
 
 async function updateSavedKeywords() {
     try {
-        const savedKeywords = await window.api.getSavedKeywords();
+        const savedKeywords = await window.electronAPI.getSavedKeywords();
         const tbody = document.querySelector('#saved-keywords-table tbody');
         tbody.innerHTML = '';
 
         savedKeywords.forEach(keyword => {
             const tr = document.createElement('tr');
-            const date = new Date(keyword.addedDate).toLocaleDateString();
             tr.innerHTML = `
                 <td>${keyword.keyword}</td>
                 <td>${keyword.searchVolume}</td>
-                <td>${date}</td>
+                <td>${keyword.difficulty}</td>
+                <td>${keyword.cpc}</td>
                 <td>
                     <button class="btn small" onclick="useKeyword('${keyword.keyword}')">Use</button>
                     <button class="btn small danger" onclick="deleteKeyword('${keyword.keyword}')">Delete</button>
@@ -343,7 +369,7 @@ async function updateSavedKeywords() {
 
 async function deleteKeyword(keyword) {
     try {
-        await window.api.deleteSavedKeyword(keyword);
+        await window.electronAPI.deleteSavedKeyword(keyword);
         updateSavedKeywords();
         showNotification('Keyword deleted successfully!', 'success');
     } catch (error) {
@@ -368,6 +394,77 @@ window.electronAPI.onDashboardStats((_event, stats) => {
     document.getElementById('post-count').textContent = stats.content.posts;
     document.getElementById('page-count').textContent = stats.content.pages;
     document.getElementById('category-count').textContent = stats.content.categories;
+});
+
+// Logging functionality
+const logger = {
+    textarea: document.getElementById('log-output'),
+    
+    formatMessage(level, message) {
+        const timestamp = new Date().toISOString();
+        return `[${timestamp}] [${level.toUpperCase()}] ${message}\n`;
+    },
+    
+    info(message) {
+        const formattedMessage = this.formatMessage('info', message);
+        this.appendLog(formattedMessage);
+    },
+    
+    success(message) {
+        const formattedMessage = this.formatMessage('success', message);
+        this.appendLog(formattedMessage);
+    },
+    
+    warning(message) {
+        const formattedMessage = this.formatMessage('warning', message);
+        this.appendLog(formattedMessage);
+    },
+    
+    error(message) {
+        const formattedMessage = this.formatMessage('error', message);
+        this.appendLog(formattedMessage);
+    },
+    
+    appendLog(message) {
+        if (this.textarea) {
+            this.textarea.value += message;
+            this.textarea.scrollTop = this.textarea.scrollHeight;
+        }
+    },
+    
+    clear() {
+        if (this.textarea) {
+            this.textarea.value = '';
+        }
+    },
+    
+    export() {
+        const content = this.textarea.value;
+        const blob = new Blob([content], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `app-logs-${new Date().toISOString()}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+};
+
+// Logging controls event listeners
+document.getElementById('clear-logs')?.addEventListener('click', () => {
+    logger.clear();
+    logger.info('Logs cleared');
+});
+
+document.getElementById('export-logs')?.addEventListener('click', () => {
+    logger.export();
+    logger.info('Logs exported');
+});
+
+document.getElementById('refresh-logs')?.addEventListener('click', () => {
+    logger.info('Logs refreshed');
 });
 
 // Load preferences, WordPress settings, and saved keywords when the page loads
