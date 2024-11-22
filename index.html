@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Electron Demo</title>
+    <title>WordPress Content Generator</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -15,12 +15,21 @@
     <div class="container">
         <div class="sidebar">
             <div class="logo">
-                <h2>Demo App</h2>
+                <h2>WP Content Generator</h2>
             </div>
             <nav>
-                <a href="#" data-section="dashboard" class="active">Dashboard</a>
-                <a href="#" data-section="analytics">Analytics</a>
-                <a href="#" data-section="settings">Settings</a>
+                <a class="nav-item active" data-section="dashboard">
+                    Dashboard
+                </a>
+                <a class="nav-item" data-section="keyword-research">
+                    Keyword Research
+                </a>
+                <a class="nav-item" data-section="generate">
+                    Generate Content
+                </a>
+                <a class="nav-item" data-section="settings">
+                    Settings
+                </a>
             </nav>
         </div>
         
@@ -30,16 +39,159 @@
                 <h1>Dashboard</h1>
                 <div class="cards">
                     <div class="card">
-                        <h3>Statistics</h3>
-                        <p>Sample statistics content</p>
+                        <h3>Site Information</h3>
+                        <div class="stat-grid">
+                            <div class="stat-item">
+                                <label>Site Name:</label>
+                                <span id="site-name">Loading...</span>
+                            </div>
+                            <div class="stat-item">
+                                <label>Description:</label>
+                                <span id="site-description">Loading...</span>
+                            </div>
+                            <div class="stat-item">
+                                <label>URL:</label>
+                                <span id="site-url">Loading...</span>
+                            </div>
+                        </div>
                     </div>
                     <div class="card">
-                        <h3>Activities</h3>
-                        <p>Recent activities will appear here</p>
+                        <h3>Content Statistics</h3>
+                        <div class="stat-grid">
+                            <div class="stat-item">
+                                <label>Total Posts:</label>
+                                <span id="post-count">-</span>
+                            </div>
+                            <div class="stat-item">
+                                <label>Total Pages:</label>
+                                <span id="page-count">-</span>
+                            </div>
+                            <div class="stat-item">
+                                <label>Categories:</label>
+                                <span id="category-count">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Keyword Research Section -->
+            <div id="keyword-research-section" class="content-section">
+                <h1>Keyword Research</h1>
+                <div class="cards">
+                    <div class="card">
+                        <h3>Find Keywords</h3>
+                        <div class="keyword-search">
+                            <div class="input-group">
+                                <label for="seed-keyword">Seed Keyword:</label>
+                                <input type="text" id="seed-keyword" placeholder="Enter a seed keyword">
+                            </div>
+                            <div class="input-group">
+                                <label for="keyword-language">Language:</label>
+                                <select id="keyword-language">
+                                    <option value="en">English</option>
+                                    <option value="es">Spanish</option>
+                                    <option value="fr">French</option>
+                                    <option value="de">German</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <button id="find-keywords" class="btn primary">Find Keywords</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Keyword Results</h3>
+                        <div class="keyword-results">
+                            <div class="table-container">
+                                <table id="keywords-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Keyword</th>
+                                            <th>Search Volume</th>
+                                            <th>Difficulty</th>
+                                            <th>CPC</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Keywords will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="keyword-actions">
+                                <button id="export-keywords" class="btn">Export to CSV</button>
+                                <button id="save-keywords" class="btn primary">Save Selected</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>Saved Keywords</h3>
+                        <div class="saved-keywords">
+                            <div class="table-container">
+                                <table id="saved-keywords-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Keyword</th>
+                                            <th>Search Volume</th>
+                                            <th>Added Date</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Saved keywords will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Generate Content Section -->
+            <div id="generate-section" class="content-section">
+                <h1>Generate Content</h1>
+                <div class="cards">
+                    <div class="card">
+                        <h3>Content Generation</h3>
+                        <div class="generate-content">
+                            <div class="input-group">
+                                <label for="content-topic">Topic or Keywords:</label>
+                                <input type="text" id="content-topic" placeholder="Enter your topic or keywords">
+                            </div>
+                            <div class="input-group">
+                                <label for="content-type">Content Type:</label>
+                                <select id="content-type">
+                                    <option value="blog">Blog Post</option>
+                                    <option value="article">Article</option>
+                                    <option value="product">Product Description</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="content-tone">Tone:</label>
+                                <select id="content-tone">
+                                    <option value="professional">Professional</option>
+                                    <option value="casual">Casual</option>
+                                    <option value="formal">Formal</option>
+                                    <option value="friendly">Friendly</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <button id="generate-button" class="btn primary">Generate Content</button>
+                            </div>
+                        </div>
                     </div>
                     <div class="card">
-                        <h3>Performance</h3>
-                        <p>Performance metrics</p>
+                        <h3>Generated Content</h3>
+                        <div class="generated-content">
+                            <textarea id="generated-text" placeholder="Generated content will appear here..." readonly></textarea>
+                            <div class="content-actions">
+                                <button id="copy-content" class="btn">Copy</button>
+                                <button id="publish-content" class="btn primary">Publish to WordPress</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -65,11 +217,53 @@
                 <div class="cards">
                     <div class="card">
                         <h3>User Preferences</h3>
-                        <p>Customize your experience</p>
+                        <div class="preference-controls">
+                            <div class="preference-item">
+                                <label for="theme-select">Theme:</label>
+                                <select id="theme-select">
+                                    <option value="light">Light</option>
+                                    <option value="dark">Dark</option>
+                                </select>
+                            </div>
+                            <div class="preference-item">
+                                <label for="auto-save">Auto Save:</label>
+                                <input type="checkbox" id="auto-save">
+                            </div>
+                            <div class="preference-item">
+                                <label for="refresh-interval">Refresh Interval (seconds):</label>
+                                <input type="number" id="refresh-interval" min="5" max="300" value="30">
+                            </div>
+                            <div class="preference-item">
+                                <label for="openai-key">OpenAI API Key:</label>
+                                <input type="password" id="openai-key" placeholder="sk-..." autocomplete="off">
+                            </div>
+                        </div>
                     </div>
                     <div class="card">
-                        <h3>Account Settings</h3>
-                        <p>Manage your account details</p>
+                        <h3>WordPress Connection</h3>
+                        <div class="settings-form">
+                            <div class="input-group">
+                                <label for="wp-site-url">WordPress Site URL</label>
+                                <input type="url" id="wp-site-url" placeholder="https://your-site.com">
+                            </div>
+                            <div class="input-group">
+                                <label for="wp-username">Username</label>
+                                <input type="text" id="wp-username">
+                            </div>
+                            <div class="input-group">
+                                <label for="wp-app-password">Application Password</label>
+                                <div class="password-input">
+                                    <input type="password" id="wp-app-password">
+                                    <button class="toggle-password" type="button">
+                                        <span class="eye-icon">👁️</span>
+                                    </button>
+                                </div>
+                                <small class="help-text">Create an application password in WordPress: Users → Profile → Application Passwords</small>
+                            </div>
+                            <button id="test-connection" class="btn">Test Connection</button>
+                            <button id="save-wp-settings" class="btn primary">Save Settings</button>
+                            <div id="connection-status" class="connection-status"></div>
+                        </div>
                     </div>
                 </div>
             </div>
