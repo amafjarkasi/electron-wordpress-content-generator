@@ -95,6 +95,8 @@ async function testConnection() {
     const statusElement = document.getElementById('connection-status');
     statusElement.className = 'connection-status';
     statusElement.style.display = 'block';
+    statusElement.style.margin = '20px auto 0';
+    statusElement.style.textAlign = 'center';
     statusElement.textContent = 'Testing connection...';
 
     try {
@@ -124,6 +126,8 @@ function showConnectionStatus(message, type) {
     statusElement.textContent = message;
     statusElement.className = `connection-status ${type}`;
     statusElement.style.display = 'block';
+    statusElement.style.margin = '20px auto 0';
+    statusElement.style.textAlign = 'center';
 }
 
 // Toggle password visibility
@@ -150,14 +154,10 @@ async function initializeWordPress() {
             if (statusElement) {
                 statusElement.className = 'connection-status success';
                 statusElement.style.display = 'block';
+                statusElement.style.margin = '20px auto 0';
+                statusElement.style.textAlign = 'center';
                 statusElement.innerHTML = `
-                    <div style="margin-bottom: 1px;">Successfully connected to WordPress site:</div>
-                    <div class="connection-details">
-                        <div class="detail-item">
-                            <span class="detail-label">URL:</span>
-                            <span class="detail-value">${result.url}</span>
-                        </div>
-                    </div>
+                    <div style="margin-bottom: 1px;">Successfully connected to WordPress site</div>
                 `;
             }
         } else {

@@ -157,6 +157,7 @@ h1 {
     display: flex;
     align-items: center;
     gap: 10px;
+    margin-bottom: 5px;
 }
 
 .preference-item label {
@@ -557,6 +558,10 @@ th {
 
 .dark-theme p {
     color: #b0b0b0;
+}
+
+.dark-theme .preference-item {
+    margin-bottom: 5px;
 }
 
 .dark-theme .preference-item label {
