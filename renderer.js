@@ -351,37 +351,42 @@ async function updateSavedKeywords() {
         savedKeywords.forEach(keyword => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td>${keyword.keyword}</td>
-                <td>${keyword.searchVolume}</td>
-                <td>${keyword.difficulty}</td>
-                <td>${keyword.cpc}</td>
+                <td>${keyword}</td>
                 <td>
-                    <button class="btn small" onclick="useKeyword('${keyword.keyword}')">Use</button>
-                    <button class="btn small danger" onclick="deleteKeyword('${keyword.keyword}')">Delete</button>
+                    <button onclick="useKeyword('${keyword}')" class="btn">Use</button>
+                    <button onclick="deleteKeyword('${keyword}')" class="btn danger">Delete</button>
                 </td>
             `;
             tbody.appendChild(tr);
         });
     } catch (error) {
-        showNotification('Failed to load saved keywords: ' + error.message, 'error');
+        logger.error(`Failed to update saved keywords: ${error.message}`);
     }
 }
 
 async function deleteKeyword(keyword) {
     try {
         await window.electronAPI.deleteSavedKeyword(keyword);
-        updateSavedKeywords();
-        showNotification('Keyword deleted successfully!', 'success');
+        logger.success(`Deleted keyword: ${keyword}`);
+        await updateSavedKeywords();
     } catch (error) {
-        showNotification('Failed to delete keyword: ' + error.message, 'error');
+        logger.error(`Failed to delete keyword: ${error.message}`);
     }
 }
 
 function useKeyword(keyword) {
     document.getElementById('content-topic').value = keyword;
     document.querySelector('[data-section="generate"]').click();
-    showNotification('Keyword added to content generator', 'success');
+    logger.info(`Using keyword: ${keyword} for content generation`);
 }
+
+// Update the window.electronAPI object to include keyword operations
+window.electronAPI = {
+    ...window.electronAPI,
+    getSavedKeywords: () => window.electronAPI.invoke('get-saved-keywords'),
+    saveKeywords: (keywords) => window.electronAPI.invoke('save-keywords', keywords),
+    deleteSavedKeyword: (keyword) => window.electronAPI.invoke('delete-saved-keyword', keyword)
+};
 
 // Handle WordPress dashboard stats
 window.electronAPI.onDashboardStats((_event, stats) => {

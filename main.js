@@ -127,6 +127,39 @@ ipcMain.handle('db:push', async (event, key, value) => {
     throw new Error('Target is not an array');
 });
 
+// Keyword-related handlers
+ipcMain.handle('get-saved-keywords', async () => {
+    const db = getDb();
+    await db.read();
+    return db.data.keywords || [];
+});
+
+ipcMain.handle('save-keywords', async (event, keywords) => {
+    const db = getDb();
+    await db.read();
+    if (!db.data.keywords) {
+        db.data.keywords = [];
+    }
+    // Add only unique keywords
+    keywords.forEach(keyword => {
+        if (!db.data.keywords.includes(keyword)) {
+            db.data.keywords.push(keyword);
+        }
+    });
+    await db.write();
+    return db.data.keywords;
+});
+
+ipcMain.handle('delete-saved-keyword', async (event, keyword) => {
+    const db = getDb();
+    await db.read();
+    if (db.data.keywords) {
+        db.data.keywords = db.data.keywords.filter(k => k !== keyword);
+        await db.write();
+    }
+    return db.data.keywords || [];
+});
+
 // WordPress API handlers
 ipcMain.handle('wp:testConnection', async (event, settings) => {
     try {
