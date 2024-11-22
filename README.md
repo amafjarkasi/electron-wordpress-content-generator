@@ -33,6 +33,10 @@ A modern desktop application built with Electron for generating and managing Wor
   - Modern and intuitive design
   - Native desktop experience
 
+  - **UI Enhancements**
+    - Improved spacing and alignment for connection status messages.
+    - Reduced spacing between elements in user preferences for a more compact layout.
+
 ## 🚀 Setup
 
 1. **Clone the repository:**

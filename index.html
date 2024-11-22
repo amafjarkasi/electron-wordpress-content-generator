@@ -27,6 +27,9 @@
                 <a class="nav-item" data-section="generate">
                     Generate Content
                 </a>
+                <a class="nav-item" data-section="content-settings">
+                    Content Settings
+                </a>
                 <a class="nav-item" data-section="settings">
                     Settings
                 </a>
@@ -207,6 +210,29 @@
                     <div class="card">
                         <h3>Reports</h3>
                         <p>Generated reports and insights</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Settings Section -->
+            <div id="content-settings-section" class="content-section">
+                <h1>Content Settings</h1>
+                <div class="cards">
+                    <div class="card">
+                        <h3>Content Preferences</h3>
+                        <div class="preference-controls">
+                            <div class="preference-item">
+                                <label for="content-length">Content Length:</label>
+                                <input type="number" id="content-length" min="100" max="1000" value="500">
+                            </div>
+                            <div class="preference-item">
+                                <label for="content-format">Content Format:</label>
+                                <select id="content-format">
+                                    <option value="html">HTML</option>
+                                    <option value="markdown">Markdown</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

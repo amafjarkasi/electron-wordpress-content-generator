@@ -34,7 +34,7 @@ async function loadPreferences() {
     
     document.getElementById('theme-select').value = preferences.theme;
     document.getElementById('auto-save').checked = preferences.autoSave;
-    document.getElementById('refresh-interval').value = preferences.refreshInterval;
+    document.getElementById('refresh-interval').value = preferences.refreshInterval || 30; // Set default value if not found
     document.getElementById('openai-key').value = preferences.openaiKey || '';
     
     applyTheme(preferences.theme);
@@ -371,9 +371,10 @@ window.electronAPI.onDashboardStats((_event, stats) => {
 });
 
 // Load preferences, WordPress settings, and saved keywords when the page loads
+document.addEventListener('DOMContentLoaded', loadPreferences);
+
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        await loadPreferences();
         await loadWordPressSettings();
         const wpResult = await initializeWordPress();
         await updateSavedKeywords();
