@@ -2,7 +2,7 @@
 
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen) ![Version](https://img.shields.io/badge/version-1.0-blue)
 
-A modern desktop application built with Electron for generating and managing WordPress content at scale.
+A modern desktop application built with Electron for generating AI content and managing WordPress SEO at scale.
 
 ## 📚 Table of Contents
 - [Features](#features)
